@@ -21,13 +21,7 @@ export default class Post extends Component {
         likes: array.isRequired,
     }
 
-    constructor () {
-        super();
-
-        this._removePost = this._removePost.bind(this);
-    }
-
-    _removePost () {
+    _removePost = () => {
         const { _removePost, id} = this.props;
 
         _removePost(id);
@@ -54,7 +48,6 @@ export default class Post extends Component {
                             _likePost = { _likePost }
                             id = { id }
                             likes = { likes }
-                            { ...context }
                         />
                     </section>
                 )}

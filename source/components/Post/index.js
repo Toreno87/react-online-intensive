@@ -1,7 +1,7 @@
 // Core
 import React, { Component } from 'react';
 import moment from 'moment';
-import { func, string, object, array } from 'prop-types';
+import { func, string, number, array } from 'prop-types';
 
 //Components
 import Like from 'components/Like';
@@ -16,7 +16,7 @@ export default class Post extends Component {
         _likePost: func.isRequired,
         _removePost: func.isRequired,
         comment: string.isRequired,
-        created: object.isRequired,
+        created: number.isRequired,
         id: string.isRequired,
         likes: array.isRequired,
     }
@@ -27,17 +27,35 @@ export default class Post extends Component {
         _removePost(id);
     }
 
+    _getCross = () => {
+        const { firstName, lastName, currentUserFirstName, currentUserLastName } = this.props;
+
+        return (
+            `${firstName} ${lastName}` === `${currentUserFirstName} ${currentUserLastName}` ? (
+                <span className = { Styles.cross } onClick = { this._removePost }/>
+            ) : null
+        );
+    }
+
     render() {
-        const { comment, created, _likePost, id, likes, currentUserLastName, currentUserFirstName, avatar } = this.props;
+        const {
+            comment,
+            created,
+            _likePost,
+            id,
+            likes,
+            firstName,
+            lastName,
+            avatar,
+        } = this.props;
+
+        const cross = this._getCross();
 
         return (
             <section className = { Styles.post }>
-                <span
-                    className = { Styles.cross }
-                    onClick = { this._removePost }
-                />
+                { cross }
                 <img src = { avatar } />
-                <a>{`${currentUserFirstName} ${currentUserLastName}`}</a>
+                <a>{`${firstName} ${lastName}`}</a>
                 <time>
                     { moment.unix(created).format('MMMM D h:mm:ss a') }
                 </time>

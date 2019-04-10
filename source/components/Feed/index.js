@@ -53,11 +53,35 @@ export default class Feed extends Component {
                 }));
             }
         });
+
+        socket.on('like', (postJSON) => {
+            const { data: {id, likes}, meta } = JSON.parse(postJSON);
+
+            if (
+                `${currentUserFirstName} ${currentUserLastName}` !==
+                `${meta.authorFirstName} ${meta.authorLastName}`
+            ) {
+                this.setState(({ posts }) => {
+                    return (
+                        {
+                            posts: posts.map((post) => {
+                                if (post.id === id) {
+                                    post.likes = [ ...likes ];
+                                }
+
+                                return post;
+                            }),
+                        }
+                    );
+                });
+            }
+        });
     }
 
     componentWillUnmount () {
         socket.removeListener('create');
         socket.removeListener('remove');
+        socket.removeListener('like');
     }
 
     _setPostFetchingState = (state) => {
@@ -82,8 +106,8 @@ export default class Feed extends Component {
     }
 
     _createPost = async (comment) => {
-        this._setPostFetchingState(true);
 
+        this._setPostFetchingState(true);
         const responce = await fetch(api, {
             method: 'POST',
             headers: {
@@ -92,9 +116,7 @@ export default class Feed extends Component {
             },
             body: JSON.stringify({ comment }),
         });
-
         const { data: post } = await responce.json();
-
         this.setState(({ posts }) => ({
             posts: [ post, ...posts ],
             isPostsFetching: false,

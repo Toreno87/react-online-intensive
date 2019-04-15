@@ -23,6 +23,7 @@ export default class Feed extends Component {
     state = {
         posts: [],
         isPostsFetching: false,
+        isAnimationPostmanFetching: true,
     };
 
     componentDidMount () {
@@ -144,8 +145,20 @@ export default class Feed extends Component {
         fromTo(composer, 1, { opacity: 0, rotationX: 50 }, { opacity: 1, rotationX: 0 });
     }
 
+    _animateNotificationShow = (postman) => {
+        fromTo(postman, 1, { opacity: 0 }, { opacity: 1 });
+    }
+
+    _animateNotificationHide = (postman) => {
+        this.setState(({ isAnimationPostmanFetching }) => ({
+            isAnimationPostmanFetching: !isAnimationPostmanFetching,
+        }));
+
+        fromTo(postman, 1, { opacity: 1 }, { opacity: 0 });
+    }
+
     render() {
-        const { posts, isPostsFetching } = this.state;
+        const { posts, isPostsFetching, isAnimationPostmanFetching } = this.state;
 
         const postJSX = posts.map((post) => {
             return (
@@ -170,7 +183,14 @@ export default class Feed extends Component {
                     onEnter = { this._animateComposerEnter }>
                     < Composer _createPost = { this._createPost } />
                 </Transition>
-                <Postman />
+                <Transition
+                    appear
+                    in = { isAnimationPostmanFetching }
+                    timeout = { 4000 }
+                    onEntered = { this._animateNotificationHide }
+                    onEntering = { this._animateNotificationShow }>
+                    <Postman />
+                </Transition>
                 { postJSX }
             </section>
         );

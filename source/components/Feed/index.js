@@ -1,6 +1,6 @@
 // Core
 import React, { Component } from 'react';
-import { Transition } from 'react-transition-group';
+import { Transition, CSSTransition, TransitionGroup } from 'react-transition-group';
 import { fromTo } from 'gsap';
 
 // Components
@@ -149,13 +149,21 @@ export default class Feed extends Component {
 
         const postJSX = posts.map((post) => {
             return (
-                <Catcher key = { post.id }>
-                    <Post
-                        { ...post }
-                        _likePost = { this._likePost }
-                        _removePost = { this._removePost }
-                    />
-                </Catcher>
+                <CSSTransition
+                    classNames = {{
+                        enter: Styles.postInStart,
+                        enterActive: Styles.postInEnd,
+                    }}
+                    key = { post.id }
+                    timeout = {{ enter: 500, exit: 400}}>
+                    <Catcher>
+                        <Post
+                            { ...post }
+                            _likePost = { this._likePost }
+                            _removePost = { this._removePost }
+                        />
+                    </Catcher>
+                </CSSTransition>
             );
         });
 
@@ -171,7 +179,9 @@ export default class Feed extends Component {
                     < Composer _createPost = { this._createPost } />
                 </Transition>
                 <Postman />
-                { postJSX }
+                <TransitionGroup>
+                    { postJSX }
+                </TransitionGroup>
             </section>
         );
     }

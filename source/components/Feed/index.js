@@ -11,6 +11,7 @@ import Post from 'components/Post';
 import StatusBar from 'components/StatusBar';
 import Spinner from 'components/Spinner';
 import Postman from 'components/Postman';
+import Counter from 'components/Counter';
 
 
 // Instrumnets
@@ -153,6 +154,8 @@ export default class Feed extends Component {
                     classNames = {{
                         enter: Styles.postInStart,
                         enterActive: Styles.postInEnd,
+                        exitActive: Styles.postOutStart,
+                        exit: Styles.postOutEnd,
                     }}
                     key = { post.id }
                     timeout = {{ enter: 500, exit: 400}}>
@@ -176,8 +179,9 @@ export default class Feed extends Component {
                     in
                     timeout = { 4000 }
                     onEnter = { this._animateComposerEnter }>
-                    < Composer _createPost = { this._createPost } />
+                    <Composer _createPost = { this._createPost } />
                 </Transition>
+                <Counter count = { postJSX.length } />
                 <Postman />
                 <TransitionGroup>
                     { postJSX }

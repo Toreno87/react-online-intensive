@@ -1,6 +1,6 @@
 // Core
 import React, { Component } from 'react';
-import  PropTypes from 'prop-types';
+import { func, string} from 'prop-types';
 
 //Components
 import { withProfile } from 'components/HOC/withProfile';
@@ -8,10 +8,11 @@ import { withProfile } from 'components/HOC/withProfile';
 // Instrumnets
 import Styles from './styles.m.css';
 
-@withProfile
-export default class Composer extends Component {
+export class Composer extends Component {
     static propTypes = {
-        _createPost: PropTypes.func.isRequired,
+        _createPost: func.isRequired,
+        avatar: string.isRequired,
+        currentUserFirstName: string.isRequired,
     };
 
     state = {
@@ -53,7 +54,7 @@ export default class Composer extends Component {
     }
 
     render() {
-        const { commnet } = this.state;
+        const { comment } = this.state;
         const { avatar, currentUserFirstName } = this.props;
 
         return (
@@ -62,7 +63,7 @@ export default class Composer extends Component {
                 <form onSubmit = { this._handleForSubmit }>
                     <textarea
                         placeholder = { `What's on your mind ${currentUserFirstName}?` }
-                        value = { commnet }
+                        value = { comment }
                         onChange = { this._updateComment }
                         onKeyPress = { this._submitOnEnter }
                     />
@@ -75,3 +76,5 @@ export default class Composer extends Component {
         );
     }
 }
+
+export default withProfile(Composer);

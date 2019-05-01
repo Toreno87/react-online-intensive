@@ -8,7 +8,6 @@ import { withProfile } from 'components/HOC/withProfile';
 import Catcher from 'components/Catcher';
 import Composer from 'components/Composer';
 import Post from 'components/Post';
-import StatusBar from 'components/StatusBar';
 import Spinner from 'components/Spinner';
 import Postman from 'components/Postman';
 import Counter from 'components/Counter';
@@ -173,7 +172,6 @@ export default class Feed extends Component {
         return (
             <section className = { Styles.feed }>
                 < Spinner isSpinning = { isPostsFetching } />
-                < StatusBar />
                 <Transition
                     appear
                     in

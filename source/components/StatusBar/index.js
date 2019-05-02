@@ -4,6 +4,7 @@ import cx from 'classnames';
 import { Transition } from 'react-transition-group';
 import { fromTo } from 'gsap';
 import { Link } from 'react-router-dom';
+import { func, bool } from 'prop-types';
 
 //Components
 import { withProfile } from 'components/HOC/withProfile';
@@ -14,6 +15,12 @@ import { socket } from 'socket/init';
 
 @withProfile
 export default class StatusBar extends Component {
+    static propTypes = {
+        _setLoginAsync: func.isRequired,
+        _setLoginAsync: func.isRequired,
+        authenticated: bool.isRequired,
+    }
+
     state = {
         online: false,
     }
@@ -41,8 +48,20 @@ export default class StatusBar extends Component {
         fromTo(composer, 1, { opacity: 0 }, { opacity: 1 });
     }
 
+    _hendlerLogoutAsync = () => {
+        const { _setLogoutAsync } = this.props;
+
+        _setLogoutAsync();
+    }
+
+    _hendlerLoginAsync = () => {
+        const { _setLoginAsync } = this.props;
+
+        _setLoginAsync();
+    };
+
     render() {
-        const { avatar, currentUserFirstName, currentUserLastName } = this.props;
+        const { avatar, currentUserFirstName, authenticated } = this.props;
         const { online } = this.state;
 
         const statusStyle = cx(Styles.status, {
@@ -52,13 +71,9 @@ export default class StatusBar extends Component {
 
         const statusMessage = online ? 'Online' : 'Offline';
 
-        return (
-            <Transition
-                appear
-                in
-                timeout = { 1000 }
-                onEnter = { this._animateStatusBarEnter }>
-                <section className = { Styles.statusBar } >
+        const loginMenu = (() => {
+            return (
+                <>
                     <div className = { statusStyle } >
                         <div>{ statusMessage }</div>
                         <span />
@@ -68,6 +83,25 @@ export default class StatusBar extends Component {
                         <span>{`${currentUserFirstName}`}</span>
                     </Link>
                     <Link to = '/feed'>Feed</Link>
+                    <Link to = '/login' onClick = { this._hendlerLogoutAsync }>Logout</Link>
+                </>
+            );
+        })();
+
+        const logoutMenu = (() => {
+            return (
+                <Link to = '/feed' onClick = { this._hendlerLoginAsync }>Login</Link>
+            );
+        })();
+
+        return (
+            <Transition
+                appear
+                in
+                timeout = { 1000 }
+                onEnter = { this._animateStatusBarEnter }>
+                <section className = { Styles.statusBar } >
+                    { authenticated ? loginMenu : logoutMenu }
                 </section>
             </Transition>
         );
